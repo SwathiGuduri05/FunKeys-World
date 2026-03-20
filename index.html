@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Baloo+2&family=Pacifico&family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kids Fun Learning</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Fredoka', cursive;
+      background: linear-gradient(180deg, #87ceeb 0%, #b0e0e6 50%, #e0ffff 100%);
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50px;
+      width: 120px;
+      height: 60px;
+      filter: blur(2px);
+      animation: cloudMove linear infinite;
+    }
+
+    .cloud::before, .cloud::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+    }
+
+    .cloud::before {
+      width: 60px;
+      height: 60px;
+      top: -20px;
+      left: 10px;
+    }
+
+    .cloud::after {
+      width: 80px;
+      height: 80px;
+      top: -30px;
+      right: 10px;
+    }
+
+    @keyframes cloudMove {
+      0% { transform: translateX(-200px); }
+      100% { transform: translateX(100vw); }
+    }
+
+    .container {
+      position: absolute;
+      text-align: center;
+      animation: pop 0.5s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .letter {
+      font-size: 80px;
+      font-weight: bold;
+      display: inline-block;
+      animation: wiggle 0.6s ease infinite alternate;
+      color: #ff4d6d;
+    }
+
+    @keyframes wiggle {
+      0% { transform: rotate(-5deg) scale(1); }
+      100% { transform: rotate(5deg) scale(1.1); }
+    }
+
+    .word {
+      font-size: 40px;
+      margin-top: 5px;
+      font-family: 'Baloo 2', cursive;
+      color: #333;
+    }
+
+    .img {
+      font-size: 80px;
+      margin-top: 10px;
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+
+<script>
+
+function createClouds() {
+  for (let i = 0; i < 6; i++) {
+    const cloud = document.createElement("div");
+    cloud.className = "cloud";
+    cloud.style.top = Math.random() * window.innerHeight * 0.5 + "px";
+    cloud.style.left = Math.random() * window.innerWidth + "px";
+    cloud.style.animationDuration = (20 + Math.random()*20) + "s";
+    document.body.appendChild(cloud);
+  }
+}
+createClouds();
+
+const words = { A:["apple","ant","airplane"], B:["ball","banana","bird"], C:["cat","car","cake"], D:["dog","duck","drum"], E:["elephant","egg","engine"], F:["fish","frog","flower"], G:["grapes","goat","guitar"], H:["hat","horse","house"], I:["ice cream","igloo","insect"], J:["juice","jar","jet"], K:["kite","king","key"], L:["lion","lamp","leaf"], M:["mango","monkey","moon"], N:["nest","nose","net"], O:["orange","owl","octopus"], P:["parrot","pencil","pizza"], Q:["queen","quilt","question"], R:["rabbit","rose","rocket"], S:["sun","star","snake"], T:["tiger","table","train"], U:["umbrella","unicorn","uniform"], V:["van","violin","vegetable"], W:["watch","whale","water"], X:["xylophone","x-ray","xerus"], Y:["yak","yacht","yellow"], Z:["zebra","zoo","zip"] };
+
+const emojiMap = { apple:"🍎", ant:"🐜", airplane:"✈️", ball:"⚽", banana:"🍌", bird:"🐦", cat:"🐱", car:"🚗", cake:"🎂", dog:"🐶", duck:"🦆", drum:"🥁", elephant:"🐘", egg:"🥚", engine:"🚂", fish:"🐟", frog:"🐸", flower:"🌸", grapes:"🍇", goat:"🐐", guitar:"🎸", hat:"🎩", horse:"🐴", house:"🏠", "ice cream":"🍨", igloo:"🏠", insect:"🐞", juice:"🧃", jar:"🫙", jet:"✈️", kite:"🪁", king:"🤴", key:"🔑", lion:"🦁", lamp:"💡", leaf:"🍃", mango:"🥭", monkey:"🐒", moon:"🌙", nest:"🪺", nose:"👃", net:"🥅", orange:"🍊", owl:"🦉", octopus:"🐙", parrot:"🦜", pencil:"✏️", pizza:"🍕", queen:"👸", quilt:"🛏️", question:"❓", rabbit:"🐰", rose:"🌹", rocket:"🚀", sun:"☀️", star:"⭐", snake:"🐍", tiger:"🐯", table:"🪑", train:"🚆", umbrella:"☂️", unicorn:"🦄", uniform:"👕", van:"🚐", violin:"🎻", vegetable:"🥦", watch:"⌚", whale:"🐋", water:"💧", xylophone:"🎶", "x-ray":"🩻", xerus:"🐿️", yak:"🐂", yacht:"⛵", yellow:"🟡", zebra:"🦓", zoo:"🏫", zip:"🧷" };
+
+const counters = {};
+
+function speak(text) {
+  const msg = new SpeechSynthesisUtterance(text);
+  msg.rate = 0.75;
+  msg.pitch = 0.85;
+  msg.volume = 0.85;
+
+  const synth = window.speechSynthesis;
+
+  function pickVoice() {
+    const voices = synth.getVoices();
+    const voice = voices.find(v => v.name.includes("Google")) || voices[0];
+    if (voice) msg.voice = voice;
+    synth.cancel();
+    synth.speak(msg);
+  }
+
+  if (synth.getVoices().length === 0) {
+    synth.onvoiceschanged = pickVoice;
+  } else {
+    pickVoice();
+  }
+}
+
+function createVisual(letter, x, y) {
+  const fonts = ["Fredoka", "Baloo 2", "Pacifico", "Luckiest Guy"];
+
+  if (!words[letter]) return;
+
+  const list = words[letter];
+  counters[letter] = (counters[letter] || 0) + 1;
+  const word = list[counters[letter] % list.length];
+  const emoji = emojiMap[word];
+
+  const container = document.createElement("div");
+  container.className = "container";
+  container.style.left = x + "px";
+  container.style.top = y + "px";
+
+  const el = document.createElement("div");
+  el.className = "letter";
+  el.innerText = letter;
+  el.style.fontFamily = fonts[Math.floor(Math.random()*fonts.length)];
+
+  const wordEl = document.createElement("div");
+  wordEl.className = "word";
+  wordEl.innerText = word;
+  wordEl.style.fontFamily = fonts[Math.floor(Math.random()*fonts.length)];
+
+  const img = document.createElement("div");
+  img.className = "img";
+  img.innerText = emoji || "✨";
+
+  container.appendChild(el);
+  container.appendChild(wordEl);
+  container.appendChild(img);
+
+  document.body.appendChild(container);
+
+  speak(word);
+
+  setTimeout(() => container.remove(), 2500);
+}
+
+window.addEventListener("keydown", (e) => {
+  const key = e.key.toUpperCase();
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  createVisual(key, x, y);
+});
+
+</script>
+
+</body>
+</html>
