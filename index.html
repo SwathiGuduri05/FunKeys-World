@@ -181,12 +181,25 @@ function createVisual(letter, x, y) {
 }
 
 window.addEventListener("keydown", (e) => {
-  const key = e.key.toUpperCase();
-  const x = Math.random() * window.innerWidth;
-  const y = Math.random() * window.innerHeight;
+  let key = e.key;
+
+  // normalize keys
+  if (key.length === 1) {
+    key = key.toUpperCase();
+  }
+
+  // fix special keys naming
+  if (key === " ") key = " ";
+  if (key.startsWith("Shift")) key = "Shift";
+  if (key.startsWith("Control")) key = "Control";
+  if (key.startsWith("Alt")) key = "Alt";
+
+  const margin = 120;
+  const x = Math.random() * (window.innerWidth - margin) + margin/2;
+  const y = Math.random() * (window.innerHeight - margin) + margin/2;
+
   createVisual(key, x, y);
 });
-
 </script>
 
 </body>
