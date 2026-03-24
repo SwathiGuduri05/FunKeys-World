@@ -119,19 +119,35 @@ const counters = {};
 
 function speak(text) {
   const msg = new SpeechSynthesisUtterance(text);
-  msg.rate = 0.75;
-  msg.pitch = 0.85;
-  msg.volume = 0.85;
+
+  // softer, slower, clearer voice
+  msg.rate = 0.6;   // slower
+  msg.pitch = 0.9;  // softer tone
+  msg.volume = 1;   // clear volume
 
   const synth = window.speechSynthesis;
 
   function pickVoice() {
     const voices = synth.getVoices();
-    const voice = voices.find(v => v.name.includes("Google")) || voices[0];
+
+    // prefer soft female / natural voices
+    let voice = voices.find(v => v.name.toLowerCase().includes("female")) ||
+                voices.find(v => v.name.toLowerCase().includes("google us english")) ||
+                voices.find(v => v.lang === "en-US") ||
+                voices[0];
+
     if (voice) msg.voice = voice;
+
     synth.cancel();
     synth.speak(msg);
   }
+
+  if (synth.getVoices().length === 0) {
+    synth.onvoiceschanged = pickVoice;
+  } else {
+    pickVoice();
+  }
+}
 
   if (synth.getVoices().length === 0) {
     synth.onvoiceschanged = pickVoice;
@@ -200,7 +216,10 @@ window.addEventListener("keydown", (e) => {
 
   createVisual(key, x, y);
 });
+
 </script>
 
 </body>
+<!-- Disable Jekyll processing -->
+
 </html>
