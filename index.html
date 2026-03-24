@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Baloo+2&family=Pacifico&family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Baloo+2&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kids Fun Learning</title>
@@ -12,86 +12,27 @@
       height: 100%;
       overflow: hidden;
       font-family: 'Fredoka', cursive;
-      background: linear-gradient(180deg, #87ceeb 0%, #b0e0e6 50%, #e0ffff 100%);
-    }
-
-    .cloud {
-      position: absolute;
-      background: rgba(255,255,255,0.6);
-      border-radius: 50px;
-      width: 120px;
-      height: 60px;
-      filter: blur(2px);
-      animation: cloudMove linear infinite;
-    }
-
-    .cloud::before, .cloud::after {
-      content: "";
-      position: absolute;
-      background: rgba(255,255,255,0.6);
-      border-radius: 50%;
-    }
-
-    .cloud::before {
-      width: 60px;
-      height: 60px;
-      top: -20px;
-      left: 10px;
-    }
-
-    .cloud::after {
-      width: 80px;
-      height: 80px;
-      top: -30px;
-      right: 10px;
-    }
-
-    @keyframes cloudMove {
-      0% { transform: translateX(-200px); }
-      100% { transform: translateX(100vw); }
+      background: linear-gradient(180deg, #87ceeb, #e0ffff);
     }
 
     .container {
       position: absolute;
       text-align: center;
-      animation: pop 0.5s ease;
       transform: translate(-50%, -50%);
     }
 
     .letter {
       font-size: 80px;
-      font-weight: bold;
-      display: inline-block;
-      animation: wiggle 0.6s ease infinite alternate;
       color: #ff4d6d;
-    }
-
-    @keyframes wiggle {
-      0% { transform: rotate(-5deg) scale(1); }
-      100% { transform: rotate(5deg) scale(1.1); }
     }
 
     .word {
       font-size: 40px;
-      margin-top: 5px;
       font-family: 'Baloo 2', cursive;
-      color: #333;
     }
 
     .img {
-      font-size: 80px;
-      margin-top: 10px;
-      animation: bounce 1s infinite alternate;
-    }
-
-    @keyframes pop {
-      0% { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes bounce {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-20px); }
+      font-size: 70px;
     }
   </style>
 </head>
@@ -99,127 +40,140 @@
 
 <script>
 
-function createClouds() {
-  for (let i = 0; i < 6; i++) {
-    const cloud = document.createElement("div");
-    cloud.className = "cloud";
-    cloud.style.top = Math.random() * window.innerHeight * 0.5 + "px";
-    cloud.style.left = Math.random() * window.innerWidth + "px";
-    cloud.style.animationDuration = (20 + Math.random()*20) + "s";
-    document.body.appendChild(cloud);
-  }
-}
-createClouds();
+const words = {
+  A:["apple","ant"], B:["ball","banana"], C:["cat","car"], D:["dog","duck"],
+  E:["elephant","egg"], F:["fish","frog"], G:["grapes","goat"], H:["hat","horse"],
+  I:["ice cream","igloo"], J:["juice","jar"], K:["kite","key"], L:["lion","lamp"],
+  M:["mango","monkey"], N:["nest","nose"], O:["orange","owl"], P:["parrot","pencil"],
+  Q:["queen","quilt"], R:["rabbit","rose"], S:["sun","star"], T:["tiger","table"],
+  U:["umbrella","unicorn"], V:["van","violin"], W:["watch","whale"], X:["xylophone","x-ray"],
+  Y:["yak","yacht"], Z:["zebra","zoo"]
+};
 
-const words = { A:["apple","ant","airplane"], B:["ball","banana","bird"], C:["cat","car","cake"], D:["dog","duck","drum"], E:["elephant","egg","engine"], F:["fish","frog","flower"], G:["grapes","goat","guitar"], H:["hat","horse","house"], I:["ice cream","igloo","insect"], J:["juice","jar","jet"], K:["kite","king","key"], L:["lion","lamp","leaf"], M:["mango","monkey","moon"], N:["nest","nose","net"], O:["orange","owl","octopus"], P:["parrot","pencil","pizza"], Q:["queen","quilt","question"], R:["rabbit","rose","rocket"], S:["sun","star","snake"], T:["tiger","table","train"], U:["umbrella","unicorn","uniform"], V:["van","violin","vegetable"], W:["watch","whale","water"], X:["xylophone","x-ray","xerus"], Y:["yak","yacht","yellow"], Z:["zebra","zoo","zip"] };
+const extraKeys = {
+  "1": {word:"one", emoji:"1️⃣"},
+  "2": {word:"two", emoji:"2️⃣"},
+  "3": {word:"three", emoji:"3️⃣"},
+  "4": {word:"four", emoji:"4️⃣"},
+  "5": {word:"five", emoji:"5️⃣"},
+  "6": {word:"six", emoji:"6️⃣"},
+  "7": {word:"seven", emoji:"7️⃣"},
+  "8": {word:"eight", emoji:"8️⃣"},
+  "9": {word:"nine", emoji:"9️⃣"},
+  "0": {word:"zero", emoji:"0️⃣"},
 
-const emojiMap = { apple:"🍎", ant:"🐜", airplane:"✈️", ball:"⚽", banana:"🍌", bird:"🐦", cat:"🐱", car:"🚗", cake:"🎂", dog:"🐶", duck:"🦆", drum:"🥁", elephant:"🐘", egg:"🥚", engine:"🚂", fish:"🐟", frog:"🐸", flower:"🌸", grapes:"🍇", goat:"🐐", guitar:"🎸", hat:"🎩", horse:"🐴", house:"🏠", "ice cream":"🍨", igloo:"🏠", insect:"🐞", juice:"🧃", jar:"🫙", jet:"✈️", kite:"🪁", king:"🤴", key:"🔑", lion:"🦁", lamp:"💡", leaf:"🍃", mango:"🥭", monkey:"🐒", moon:"🌙", nest:"🪺", nose:"👃", net:"🥅", orange:"🍊", owl:"🦉", octopus:"🐙", parrot:"🦜", pencil:"✏️", pizza:"🍕", queen:"👸", quilt:"🛏️", question:"❓", rabbit:"🐰", rose:"🌹", rocket:"🚀", sun:"☀️", star:"⭐", snake:"🐍", tiger:"🐯", table:"🪑", train:"🚆", umbrella:"☂️", unicorn:"🦄", uniform:"👕", van:"🚐", violin:"🎻", vegetable:"🥦", watch:"⌚", whale:"🐋", water:"💧", xylophone:"🎶", "x-ray":"🩻", xerus:"🐿️", yak:"🐂", yacht:"⛵", yellow:"🟡", zebra:"🦓", zoo:"🏫", zip:"🧷" };
+  "Enter": {word:"enter", emoji:"⏎"},
+  " ": {word:"space", emoji:"⭐"},
+  "Backspace": {word:"backspace", emoji:"⬅️"},
+  "ArrowUp": {word:"up", emoji:"⬆️"},
+  "ArrowDown": {word:"down", emoji:"⬇️"},
+  "ArrowLeft": {word:"left", emoji:"⬅️"},
+  "ArrowRight": {word:"right", emoji:"➡️"}
+};
+
+const emojiMap = {
+  apple:"🍎", ant:"🐜", ball:"⚽", banana:"🍌", cat:"🐱", car:"🚗", dog:"🐶", duck:"🦆",
+  elephant:"🐘", egg:"🥚", fish:"🐟", frog:"🐸", grapes:"🍇", goat:"🐐", hat:"🎩", horse:"🐴",
+  "ice cream":"🍨", igloo:"🏠", juice:"🧃", jar:"🫙", kite:"🪁", key:"🔑", lion:"🦁", lamp:"💡",
+  mango:"🥭", monkey:"🐒", nest:"🪺", nose:"👃", orange:"🍊", owl:"🦉", parrot:"🦜", pencil:"✏️",
+  queen:"👸", quilt:"🛏️", rabbit:"🐰", rose:"🌹", sun:"☀️", star:"⭐", tiger:"🐯", table:"🪑",
+  umbrella:"☂️", unicorn:"🦄", van:"🚐", violin:"🎻", watch:"⌚", whale:"🐋", xylophone:"🎶",
+  "x-ray":"🩻", yak:"🐂", yacht:"⛵", zebra:"🦓", zoo:"🏫"
+};
 
 const counters = {};
 
 function speak(text) {
   const msg = new SpeechSynthesisUtterance(text);
+  msg.rate = 0.6;
+  msg.pitch = 0.9;
 
-  // softer, slower, clearer voice
-  msg.rate = 0.6;   // slower
-  msg.pitch = 0.9;  // softer tone
-  msg.volume = 1;   // clear volume
+  const voices = speechSynthesis.getVoices();
+  const indianVoice = voices.find(v => v.lang === "en-IN") || voices[0];
+  msg.voice = indianVoice;
 
-  const synth = window.speechSynthesis;
-
-  function pickVoice() {
-    const voices = synth.getVoices();
-
-    // prefer soft female / natural voices
-    let voice = voices.find(v => v.name.toLowerCase().includes("female")) ||
-                voices.find(v => v.name.toLowerCase().includes("google us english")) ||
-                voices.find(v => v.lang === "en-US") ||
-                voices[0];
-
-    if (voice) msg.voice = voice;
-
-    synth.cancel();
-    synth.speak(msg);
-  }
-
-  if (synth.getVoices().length === 0) {
-    synth.onvoiceschanged = pickVoice;
-  } else {
-    pickVoice();
-  }
+  speechSynthesis.cancel();
+  speechSynthesis.speak(msg);
 }
 
-  if (synth.getVoices().length === 0) {
-    synth.onvoiceschanged = pickVoice;
+function createVisual(key) {
+  let word, emoji;
+
+  if (words[key]) {
+    const list = words[key];
+    counters[key] = (counters[key] || 0) + 1;
+    word = list[counters[key] % list.length];
+    emoji = emojiMap[word];
+  } else if (extraKeys[key]) {
+    word = extraKeys[key].word;
+    emoji = extraKeys[key].emoji;
   } else {
-    pickVoice();
+    return;
   }
-}
-
-function createVisual(letter, x, y) {
-  const fonts = ["Fredoka", "Baloo 2", "Pacifico", "Luckiest Guy"];
-
-  if (!words[letter]) return;
-
-  const list = words[letter];
-  counters[letter] = (counters[letter] || 0) + 1;
-  const word = list[counters[letter] % list.length];
-  const emoji = emojiMap[word];
 
   const container = document.createElement("div");
   container.className = "container";
-  container.style.left = x + "px";
-  container.style.top = y + "px";
+  container.style.left = Math.random()*window.innerWidth + "px";
+  container.style.top = Math.random()*window.innerHeight + "px";
 
-  const el = document.createElement("div");
-  el.className = "letter";
-  el.innerText = letter;
-  el.style.fontFamily = fonts[Math.floor(Math.random()*fonts.length)];
+  let emojiDisplay = "";
 
-  const wordEl = document.createElement("div");
-  wordEl.className = "word";
-  wordEl.innerText = word;
-  wordEl.style.fontFamily = fonts[Math.floor(Math.random()*fonts.length)];
+  // 🔢 Special logic for number keys (show multiple emojis)
+  if (!isNaN(key)) {
+    const count = parseInt(key);
+    const emojiList = ["🍎","🐶","⭐","⚽","🍌","🐱","🚗","🌸","🐸","🍇"];
+    const randomEmoji = emojiList[Math.floor(Math.random()*emojiList.length)];
 
-  const img = document.createElement("div");
-  img.className = "img";
-  img.innerText = emoji || "✨";
-
-  container.appendChild(el);
-  container.appendChild(wordEl);
-  container.appendChild(img);
-
-  document.body.appendChild(container);
-
-  speak(word);
-
-  setTimeout(() => container.remove(), 2500);
-}
-
-window.addEventListener("keydown", (e) => {
-  let key = e.key;
-
-  // normalize keys
-  if (key.length === 1) {
-    key = key.toUpperCase();
+    for (let i = 0; i < count; i++) {
+      emojiDisplay += randomEmoji + " ";
+    }
+  } else {
+    emojiDisplay = emoji || "✨";
   }
 
-  // fix special keys naming
-  if (key === " ") key = " ";
-  if (key.startsWith("Shift")) key = "Shift";
-  if (key.startsWith("Control")) key = "Control";
-  if (key.startsWith("Alt")) key = "Alt";
+  container.innerHTML = `
+    <div class="letter">${key}</div>
+    <div class="word">${word}</div>
+    <div class="img">${emojiDisplay}</div>
+  `;
 
-  const margin = 120;
-  const x = Math.random() * (window.innerWidth - margin) + margin/2;
-  const y = Math.random() * (window.innerHeight - margin) + margin/2;
+  document.body.appendChild(container);
+  speak(word);
 
-  createVisual(key, x, y);
+  setTimeout(()=>container.remove(),2000);
+} else if (extraKeys[key]) {
+    word = extraKeys[key].word;
+    emoji = extraKeys[key].emoji;
+  } else {
+    return;
+  }
+
+  const container = document.createElement("div");
+  container.className = "container";
+  container.style.left = Math.random()*window.innerWidth + "px";
+  container.style.top = Math.random()*window.innerHeight + "px";
+
+  container.innerHTML = `
+    <div class="letter">${key}</div>
+    <div class="word">${word}</div>
+    <div class="img">${emoji}</div>
+  `;
+
+  document.body.appendChild(container);
+  speak(word);
+
+  setTimeout(()=>container.remove(),2000);
+}
+
+window.addEventListener("keydown", (e)=>{
+  let key = e.key;
+
+  if (/^[a-zA-Z]$/.test(key)) key = key.toUpperCase();
+
+  createVisual(key);
 });
 
 </script>
 
 </body>
-<!-- Disable Jekyll processing -->
-
 </html>
