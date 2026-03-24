@@ -90,78 +90,49 @@ const extraKeys = {
 "\"": {word:"quotation", emoji:"\""},
 "\\": {word:"backslash", emoji:"\\"},
 ".": {word:"dot", emoji:"."},
-",": {word:"comma", emoji:","},
-"/": {word:"slash", emoji:"/"},
-"?": {word:"question", emoji:"❓"},
-"!": {word:"exclamation", emoji:"❗"},
-"@": {word:"at", emoji:"@"},
-"#": {word:"hash", emoji:"#"},
-"$": {word:"dollar", emoji:"💲"},
-"%": {word:"percent", emoji:"%"},
-"^": {word:"caret", emoji:"^"},
-"&": {word:"and", emoji:"&"},
-"*": {word:"star", emoji:"⭐"},
-"(": {word:"open bracket", emoji:"("},
-")": {word:"close bracket", emoji:")"},
-"-": {word:"minus", emoji:"➖"},
-"_": {word:"underscore", emoji:"_"},
-"=": {word:"equals", emoji:"="},
-"+": {word:"plus", emoji:"➕"}
+",": {word:"comma", emoji:","}
 };
 
-const emojiMap = { apple:"🍎", ant:"🐜", ball:"⚽", banana:"🍌", cat:"🐱", car:"🚗", dog:"🐶", duck:"🦆",
-elephant:"🐘", egg:"🥚", fish:"🐟", frog:"🐸", grapes:"🍇", goat:"🐐", hat:"🎩", horse:"🐴",
-"ice cream":"🍨", igloo:"🏠", juice:"🧃", jar:"🫙", kite:"🪁", key:"🔑", lion:"🦁", lamp:"💡",
-mango:"🥭", monkey:"🐒", nest:"🪺", nose:"👃", orange:"🍊", owl:"🦉", parrot:"🦜", pencil:"✏️",
-queen:"👸", quilt:"🛏️", rabbit:"🐰", rose:"🌹", sun:"☀️", star:"⭐", tiger:"🐯", table:"🪑",
-umbrella:"☂️", unicorn:"🦄", van:"🚐", violin:"🎻", watch:"⌚", whale:"🐋", xylophone:"🎶",
-"x-ray":"🩻", yak:"🐂", yacht:"⛵", zebra:"🦓", zoo:"🏫" };
+const emojiMap = { apple:"🍎", ant:"🐜", ball:"⚽", banana:"🍌", cat:"🐱", car:"🚗", dog:"🐶", duck:"🦆" };
 
 const randomThings = [
 {word:"dog",emoji:"🐶"},{word:"cat",emoji:"🐱"},{word:"apple",emoji:"🍎"},
 {word:"banana",emoji:"🍌"},{word:"car",emoji:"🚗"},{word:"flower",emoji:"🌸"},
 {word:"bird",emoji:"🐦"},{word:"fish",emoji:"🐟"},
-{word:"eye",emoji:"👁️"},{word:"ear",emoji:"👂"},{word:"nose",emoji:"👃"},
-{word:"hand",emoji:"✋"},{word:"leg",emoji:"🦵"},{word:"foot",emoji:"🦶"},
-{word:"brain",emoji:"🧠"},{word:"tooth",emoji:"🦷"}
+{word:"eye",emoji:"👁️"},{word:"ear",emoji:"👂"},{word:"nose",emoji:"👃"}
 ];
 
 const counters = {};
-let lastYPositions = [];
+let positions = [];
 
 function speak(text) {
   const msg = new SpeechSynthesisUtterance(text);
   msg.rate = 0.6;
   msg.pitch = 0.9;
-
-  const voices = speechSynthesis.getVoices();
-  const indian = voices.find(v=>v.lang==="en-IN")||voices[0];
-  if(indian) msg.voice = indian;
-
   speechSynthesis.cancel();
   speechSynthesis.speak(msg);
 }
 
-function show(x,y,key,word,emojiDisplay){
+function getSafePosition() {
+  let x, y, tries = 0;
+  do {
+    x = 100 + Math.random() * (window.innerWidth - 200);
+    y = 100 + Math.random() * (window.innerHeight - 200);
+    tries++;
+  } while (positions.some(p => Math.abs(p.x - x) < 120 && Math.abs(p.y - y) < 120) && tries < 20);
+
+  positions.push({x,y});
+  if (positions.length > 15) positions.shift();
+  return {x,y};
+}
+
+function show(key, word, emojiDisplay){
+  const {x,y} = getSafePosition();
+
   const container=document.createElement("div");
   container.className="container";
-
-  let adjustedY = y;
-  for(let pos of lastYPositions){
-    if(Math.abs(pos - adjustedY) < 100){
-      adjustedY += 100;
-    }
-  }
-
-  if(adjustedY > window.innerHeight - 100){
-    adjustedY = 100;
-  }
-
-  lastYPositions.push(adjustedY);
-  if(lastYPositions.length > 10) lastYPositions.shift();
-
   container.style.left=x+"px";
-  container.style.top=adjustedY+"px";
+  container.style.top=y+"px";
 
   container.innerHTML = `
     <div class="letter">${key||""}</div>
@@ -172,55 +143,32 @@ function show(x,y,key,word,emojiDisplay){
   document.body.appendChild(container);
   speak(word);
 
-  setTimeout(()=>{
-    container.remove();
-    lastYPositions = lastYPositions.filter(p => p !== adjustedY);
-  },2000);
+  setTimeout(()=> container.remove(),2000);
 }
 
-function handleKey(key,x,y){
-
+function handleKey(key){
   if(/^[a-zA-Z]$/.test(key)){
     key=key.toUpperCase();
     const list=words[key];
     counters[key]=(counters[key]||0)+1;
     const word=list[counters[key]%list.length];
-    show(x,y,key,word,emojiMap[word]);
+    show(key,word,emojiMap[word]||"⭐");
   }
-
-  else if(!isNaN(key) && key.trim()!==""){
-    const count=parseInt(key);
-    const emojis=["🍎","🐶","⭐","⚽","🍌","🐱"];
-    const e=emojis[Math.floor(Math.random()*emojis.length)];
-    let display="";
-    for(let i=0;i<count;i++) display+=e+" ";
-    show(x,y,key,count.toString(),display);
-  }
-
-  else{
-    if(key.startsWith("Shift")) key="Shift";
-    if(key.startsWith("Control")) key="Control";
-    if(key.startsWith("Alt")) key="Alt";
-
-    if(extraKeys[key]){
-      show(x,y,key,extraKeys[key].word,extraKeys[key].emoji);
-    }
+  else if(extraKeys[key]){
+    show(key,extraKeys[key].word,extraKeys[key].emoji);
   }
 }
 
-window.addEventListener("keydown",e=>{
-  handleKey(e.key,Math.random()*window.innerWidth,Math.random()*window.innerHeight);
+window.addEventListener("keydown",e=> handleKey(e.key));
+
+window.addEventListener("click",()=>{
+  const item=randomThings[Math.floor(Math.random()*randomThings.length)];
+  show("",item.word,item.emoji);
 });
 
-window.addEventListener("click",e=>{
+window.addEventListener("touchstart",()=>{
   const item=randomThings[Math.floor(Math.random()*randomThings.length)];
-  show(e.clientX,e.clientY,"",item.word,item.emoji);
-});
-
-window.addEventListener("touchstart",e=>{
-  const t=e.touches[0];
-  const item=randomThings[Math.floor(Math.random()*randomThings.length)];
-  show(t.clientX,t.clientY,"",item.word,item.emoji);
+  show("",item.word,item.emoji);
 });
 
 </script>
